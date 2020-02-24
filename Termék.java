@@ -71,6 +71,10 @@ public class Termék {
         this.darab = darab;
     }
     
+    @Override
+    public String toString(){
+        return megnevezes;
+    }
     
     
 }

@@ -121,9 +121,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="cikkszam">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cikkszamActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="megnevezes">
     </Component>
@@ -147,9 +144,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="ar">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="arActionPerformed"/>
-      </Events>
     </Component>
   </SubComponents>
 </Form>

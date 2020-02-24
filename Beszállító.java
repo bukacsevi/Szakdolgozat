@@ -80,6 +80,9 @@ public class Beszállító {
     public void setCegAdoSzam(String cegAdoSzam) {
         this.cegAdoSzam = cegAdoSzam;
     }
-    
+    @Override
+    public String toString(){
+        return cegNev;
+    }
     
 }

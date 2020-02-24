@@ -78,7 +78,10 @@ public class Vevő {
     public void setVevoEmailCim(String vevoEmailCim) {
         this.vevoEmailCim = vevoEmailCim;
     }
-    
+    @Override
+    public String toString(){
+        return vezetekNev+" "+keresztNev;
+    }
     
     
 }

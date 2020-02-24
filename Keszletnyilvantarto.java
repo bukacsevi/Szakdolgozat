@@ -6,7 +6,15 @@
 package adatbáziskliens;
 
 import adatbáziskapcsolat.DbKapcsolat;
+import adatbáziskapcsolat.Raktár;
+import adatbáziskapcsolat.Termék;
+import static java.lang.Math.E;
+import static java.lang.StrictMath.E;
+import java.util.Vector;
+import static javafx.scene.input.KeyCode.E;
+import javax.swing.AbstractListModel;
 import javax.swing.JFrame;
+import javax.swing.*;
 
 /**
  *
@@ -21,6 +29,8 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
         db = new DbKapcsolat();
+        
+        
     }
 
     /**
@@ -32,6 +42,17 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        raktarLista = new javax.swing.JList();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        termekLista = new javax.swing.JList();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        termekDb = new javax.swing.JTextField();
+        bevetelezesGomb = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
@@ -45,6 +66,32 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Készletnyilvántartó");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
+
+        jLabel1.setText("Bevételezés/Kivételezés");
+
+        jScrollPane2.setViewportView(raktarLista);
+
+        jScrollPane3.setViewportView(termekLista);
+
+        jLabel2.setText("raktár");
+
+        jLabel3.setText("termék");
+
+        jLabel4.setText("darab");
+
+        bevetelezesGomb.setText("+");
+        bevetelezesGomb.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bevetelezesGombActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("-");
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -103,11 +150,48 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(39, 39, 39)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addGap(69, 69, 69)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(termekDb, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(95, 95, 95)
+                        .addComponent(bevetelezesGomb)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton2)))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 279, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(termekDb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bevetelezesGomb)
+                    .addComponent(jButton2))
+                .addContainerGap(72, Short.MAX_VALUE))
         );
 
         pack();
@@ -123,7 +207,8 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
         this.setVisible(false);
         UjTermekHozzaadas ujTermek = new UjTermekHozzaadas(this, true);
         ujTermek.setVisible(true);
-
+        //raktarLista.setListData(db.getRaktarak());
+        //termekLista.setListData(db.getTermekek());
     }//GEN-LAST:event_ujTermekMenuActionPerformed
 
     private void ujRakterMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ujRakterMenuActionPerformed
@@ -139,9 +224,24 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
         ujVevo.setVisible(true);
     }//GEN-LAST:event_ujVevoMenuActionPerformed
 
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        raktarLista.setListData(db.getRaktarak());
+        termekLista.setListData(db.getTermekek());
+    }//GEN-LAST:event_formWindowActivated
+
+    private void bevetelezesGombActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bevetelezesGombActionPerformed
+        int raktarId=((Raktár) raktarLista.getSelectedValue()).getRaktarId();
+        int termekId=((Termék) termekLista.getSelectedValue()).getTermekId();
+        int darab= Integer.parseInt(termekDb.getText());
+        
+        db.bevetelezes(raktarId, termekId, darab);
+    }//GEN-LAST:event_bevetelezesGombActionPerformed
+
     protected DbKapcsolat getDbKapcsolat() {
         return db;
     }
+    
+    
     
     
 
@@ -181,12 +281,23 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bevetelezesGomb;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JList raktarLista;
+    private javax.swing.JTextField termekDb;
+    private javax.swing.JList termekLista;
     private javax.swing.JMenuItem ujBeszallitoMenu;
     private javax.swing.JMenuItem ujRakterMenu;
     private javax.swing.JMenuItem ujTermekMenu;

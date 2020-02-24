@@ -71,5 +71,9 @@ public class Raktár {
         this.raktarEmailCim = raktarEmailCim;
     }
     
+    @Override
+    public String toString(){
+        return raktarNev;
+    }
     
 }

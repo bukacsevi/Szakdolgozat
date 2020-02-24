@@ -68,12 +68,6 @@ public class UjTermekHozzaadas extends javax.swing.JDialog {
         jLabel3.setForeground(new java.awt.Color(0, 0, 102));
         jLabel3.setText("Megnevezés");
 
-        cikkszam.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cikkszamActionPerformed(evt);
-            }
-        });
-
         ujTermekHozzaadButton.setText("Hozzáad");
         ujTermekHozzaadButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -84,12 +78,6 @@ public class UjTermekHozzaadas extends javax.swing.JDialog {
         jLabel4.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 11)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 102));
         jLabel4.setText("Ár");
-
-        ar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                arActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -140,10 +128,6 @@ public class UjTermekHozzaadas extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cikkszamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cikkszamActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cikkszamActionPerformed
-
     private void ujTermekHozzaadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ujTermekHozzaadButtonActionPerformed
 
         try {
@@ -167,10 +151,6 @@ public class UjTermekHozzaadas extends javax.swing.JDialog {
 
 
     }//GEN-LAST:event_ujTermekHozzaadButtonActionPerformed
-
-    private void arActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_arActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_arActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         frame.setVisible(true);
