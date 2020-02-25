@@ -24,6 +24,7 @@ public class DbKapcsolat {
     private Vector<Raktár> raktarak;
     private Vector<Vevő> vevok;
     private Vector<Beszállító> beszallitok;
+    private Vector<Termék> termekekAdottRaktarban;
 
     private String database;
     private Connection con;
@@ -35,6 +36,7 @@ public class DbKapcsolat {
         raktarak = new Vector<Raktár>();
         vevok = new Vector<Vevő>();
         beszallitok = new Vector<Beszállító>();
+        termekekAdottRaktarban = new Vector<Termék>();
 
         //Kapcsolat az adatbázissal
         try {
@@ -76,7 +78,7 @@ public class DbKapcsolat {
             Logger.getLogger(DbKapcsolat.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("hiba a beszallitok tábla létrehozásánál");
         }
-        
+
         //Termék Tábla
         try {      //BESZÁLLITOiD és nem kell db
             stmt.execute("CREATE TABLE IF NOT EXISTS termekek("
@@ -85,7 +87,7 @@ public class DbKapcsolat {
                     + "cikkszám text," // legyen unique
                     + "megnevezes text,"
                     + "ar int)");
-                    
+
             System.out.println("tábla termekek létrehozva");
 
         } catch (SQLException ex) {
@@ -126,8 +128,6 @@ public class DbKapcsolat {
             System.out.println("hiba a vevok tábla létrehozásánál");
         }
 
-        
-
         //Tranzakciók tábla
         try {
             stmt.execute("CREATE TABLE IF NOT EXISTS tranzakciok ("
@@ -166,6 +166,10 @@ public class DbKapcsolat {
 
     public Vector<Beszállító> getBeszallitok() {
         return this.beszallitok;
+    }
+
+    public Vector<Termék> getTermekekAdottRaktarban() {
+        return termekekAdottRaktarban;
     }
 
     public void bevetelezes(int raktarId, int termekId, int db) {
@@ -279,10 +283,10 @@ public class DbKapcsolat {
             System.out.println("_____________________Termékek:___________________________");
             while (rs.next()) {
                 System.out.println("id:  " + rs.getInt("termekId"));
-               System.out.println("cegnév: " + rs.getString("cegNev"));
+                System.out.println("cegnév: " + rs.getString("cegNev"));
                 System.out.println("cikkszám:  " + rs.getString("cikkszám"));
-               System.out.println("megnevezés  :" + rs.getString("megnevezes"));
-                System.out.println("ár:  " + rs.getInt("ar"));                
+                System.out.println("megnevezés  :" + rs.getString("megnevezes"));
+                System.out.println("ár:  " + rs.getInt("ar"));
                 System.out.println("");
             }
         } catch (SQLException ex) {
@@ -366,7 +370,7 @@ public class DbKapcsolat {
                         rs.getString("cikkszám"),
                         rs.getString("megnevezes"),
                         rs.getInt("ar")));
-                        
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(DbKapcsolat.class.getName()).log(Level.SEVERE, null, ex);
@@ -421,7 +425,7 @@ public class DbKapcsolat {
                         rs.getString("cikkszám"),
                         rs.getString("megnevezes"),
                         rs.getInt("ar")));
-                        
+
             }
         } catch (SQLException se) {
             System.err.println("Termék lekérdezési hiba!");
@@ -569,5 +573,43 @@ public class DbKapcsolat {
             JOptionPane.showMessageDialog(null, "Hibás adatbevitel!");
         }
 
+    }
+
+    public void raktarTermekLista(int raktarId) {
+        try {
+
+            ResultSet rs = stmt.executeQuery("SELECT termekek.termekId, termekek.cegId,termekek.cikkszám,termekek.megnevezes,termekek.ar FROM termekek INNER JOIN tranzakciok ON tranzakciok.termekId=termekek.termekId AND tranzakciok.raktarId="+raktarId+" AND tranzakciok.termekDb>0 ;");
+            termekekAdottRaktarban.clear();
+
+            while (rs.next()) {
+                termekekAdottRaktarban.add(new Termék(rs.getInt("termekId"),
+                        rs.getInt("cegId"),
+                        rs.getString("cikkszám"),
+                        rs.getString("megnevezes"),
+                        rs.getInt("ar")));
+
+            }
+        } catch (SQLException se) {
+            System.err.println("Lekérdezési hiba!");
+            System.err.println(se.getMessage());
+        }
+    }
+    
+    public int aktualisTermekMennyisegRaktarban(Raktár raktar, Termék termek){
+        int raktarId=raktar.getRaktarId();
+        int termekId=termek.getTermekId();
+        int termekDb=0;
+        
+        try {
+            ResultSet rs = stmt.executeQuery("SELECT tranzakciok.termekDb FROM tranzakciok WHERE tranzakciok.termekId="+termekId+" AND tranzakciok.raktarId="+raktarId+" ;");
+            
+            while(rs.next()){
+                termekDb=rs.getInt("termekDb");
+            }
+        
+        } catch (SQLException ex) {
+            Logger.getLogger(DbKapcsolat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return termekDb;
     }
 }

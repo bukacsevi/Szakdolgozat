@@ -58,6 +58,7 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
         ujTermekMenu = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         ujRakterMenu = new javax.swing.JMenuItem();
+        raktarkoziAtvezetesMenu = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
         ujVevoMenu = new javax.swing.JMenuItem();
         jMenu6 = new javax.swing.JMenu();
@@ -121,6 +122,14 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
             }
         });
         jMenu4.add(ujRakterMenu);
+
+        raktarkoziAtvezetesMenu.setText("Raktárközi Átvezetés");
+        raktarkoziAtvezetesMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                raktarkoziAtvezetesMenuActionPerformed(evt);
+            }
+        });
+        jMenu4.add(raktarkoziAtvezetesMenu);
 
         jMenuBar1.add(jMenu4);
 
@@ -261,6 +270,12 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_kivetelezesGombActionPerformed
 
+    private void raktarkoziAtvezetesMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_raktarkoziAtvezetesMenuActionPerformed
+        this.setVisible(false);
+        RaktarkoziAtvezetes raktarkoziAtvezetes=new RaktarkoziAtvezetes(this,true);
+        raktarkoziAtvezetes.setVisible(true);
+    }//GEN-LAST:event_raktarkoziAtvezetesMenuActionPerformed
+
     protected DbKapcsolat getDbKapcsolat() {
         return db;
     }
@@ -316,6 +331,7 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JButton kivetelezesGomb;
     private javax.swing.JList raktarLista;
+    private javax.swing.JMenuItem raktarkoziAtvezetesMenu;
     private javax.swing.JTextField termekDb;
     private javax.swing.JList termekLista;
     private javax.swing.JMenuItem ujBeszallitoMenu;
