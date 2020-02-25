@@ -120,7 +120,7 @@
                       <EmptySpace min="-2" pref="95" max="-2" attributes="0"/>
                       <Component id="bevetelezesGomb" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                      <Component id="kivetelezesGomb" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace pref="43" max="32767" attributes="0"/>
@@ -148,7 +148,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="termekDb" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="bevetelezesGomb" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="kivetelezesGomb" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="72" max="32767" attributes="0"/>
           </Group>
@@ -218,10 +218,13 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bevetelezesGombActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton2">
+    <Component class="javax.swing.JButton" name="kivetelezesGomb">
       <Properties>
         <Property name="text" type="java.lang.String" value="-"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="kivetelezesGombActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

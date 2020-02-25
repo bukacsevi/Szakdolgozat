@@ -8,27 +8,37 @@ package adatbáziskapcsolat;
 public class Termék {
     
     private int termekId;
+    private int cegId;
     private String cikkszam;
     private String megnevezes;
     private int ar;    
-    private int darab;
     
-    public Termék(int termekId_,String cikkszam_,String megnevezes_,int ar_,int darab_){
+    
+    public Termék(int termekId_,int cegId_,String cikkszam_,String megnevezes_,int ar_){
         termekId=termekId_;
+        cegId=cegId_;
         cikkszam=cikkszam_;
         megnevezes=megnevezes_;
         ar=ar_;
-        darab=darab_;
+        
         
     }
     
-    public Termék(String cikkszam_,String megnevezes_,int ar_){
-        
+    public Termék(int cegId_,String cikkszam_,String megnevezes_,int ar_){
+        cegId=cegId_;
         cikkszam=cikkszam_;
         megnevezes=megnevezes_;
         ar=ar_;
-        darab=0;
         
+        
+    }
+
+    public int getBeszallitoId() {
+        return cegId;
+    }
+
+    public void setBeszallitoId(int beszallitoId) {
+        this.cegId = beszallitoId;
     }
     
     public int getAr() {
@@ -62,14 +72,7 @@ public class Termék {
     public void setMegnevezes(String megnevezes) {
         this.megnevezes = megnevezes;
     }
-
-    public int getDarab() {
-        return darab;
-    }
-
-    public void setDarab(int darab) {
-        this.darab = darab;
-    }
+    
     
     @Override
     public String toString(){

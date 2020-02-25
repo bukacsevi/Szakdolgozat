@@ -51,7 +51,7 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         termekDb = new javax.swing.JTextField();
         bevetelezesGomb = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        kivetelezesGomb = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
@@ -90,7 +90,12 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("-");
+        kivetelezesGomb.setText("-");
+        kivetelezesGomb.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                kivetelezesGombActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -167,7 +172,7 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
                         .addGap(95, 95, 95)
                         .addComponent(bevetelezesGomb)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton2)))
+                        .addComponent(kivetelezesGomb)))
                 .addContainerGap(43, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -189,7 +194,7 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(termekDb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(bevetelezesGomb)
-                    .addComponent(jButton2))
+                    .addComponent(kivetelezesGomb))
                 .addContainerGap(72, Short.MAX_VALUE))
         );
 
@@ -232,16 +237,29 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
         try {
             int raktarId = ((Raktár) raktarLista.getSelectedValue()).getRaktarId();
             int termekId = ((Termék) termekLista.getSelectedValue()).getTermekId();
-            int darab = Integer.parseInt(termekDb.getText()); //input ellenőrzés kell
-            //raktarLista.setListData(db.getRaktarak());
-            //termekLista.setListData(db.getTermekek());
-           
+            int darab = Integer.parseInt(termekDb.getText()); 
+                       
             db.bevetelezes(raktarId, termekId, darab);
             
         } catch (Exception e) {
-            System.out.println("hiba a bevételezésben");
+            System.out.println("Adatbeviteli hiba");
+            JOptionPane.showMessageDialog(null, "Adatbeviteli hiba!");
         }
     }//GEN-LAST:event_bevetelezesGombActionPerformed
+
+    private void kivetelezesGombActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kivetelezesGombActionPerformed
+        try {
+            int raktarId = ((Raktár) raktarLista.getSelectedValue()).getRaktarId();
+            int termekId = ((Termék) termekLista.getSelectedValue()).getTermekId();
+            int darab = Integer.parseInt(termekDb.getText());          
+           
+            db.kivételezés(raktarId, termekId, darab);
+            
+        } catch (Exception e) {
+            System.out.println("hiba a bevételezésben");
+            JOptionPane.showMessageDialog(null, "Adatbeviteli hiba!");
+        }
+    }//GEN-LAST:event_kivetelezesGombActionPerformed
 
     protected DbKapcsolat getDbKapcsolat() {
         return db;
@@ -284,7 +302,6 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bevetelezesGomb;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -297,6 +314,7 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JButton kivetelezesGomb;
     private javax.swing.JList raktarLista;
     private javax.swing.JTextField termekDb;
     private javax.swing.JList termekLista;

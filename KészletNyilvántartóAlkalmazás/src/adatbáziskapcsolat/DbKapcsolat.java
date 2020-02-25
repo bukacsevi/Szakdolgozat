@@ -60,15 +60,32 @@ public class DbKapcsolat {
 
          }*/
         //Táblák létrehozása ha még nem létezik
+        //Beszállítók tábla
+        try {
+            stmt.execute("CREATE TABLE IF NOT EXISTS beszallitok("
+                    + "cegId  SERIAL NOT NULL PRIMARY KEY,"
+                    + "cegNev text,"
+                    + "telephely text,"
+                    + "cegTelefonSzam text,"
+                    + "cegEmailCim text,"
+                    + "cegAdoSzam text)");
+
+            System.out.println("tábla beszallitok létrehozva");
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DbKapcsolat.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("hiba a beszallitok tábla létrehozásánál");
+        }
+        
         //Termék Tábla
         try {      //BESZÁLLITOiD és nem kell db
             stmt.execute("CREATE TABLE IF NOT EXISTS termekek("
                     + "termekId  SERIAL NOT NULL PRIMARY KEY,"
+                    + "cegId int REFERENCES beszallitok(cegId),"
                     + "cikkszám text," // legyen unique
                     + "megnevezes text,"
-                    + "ar int,"
-                    + "darab text)"); //nem kell ide
-
+                    + "ar int)");
+                    
             System.out.println("tábla termekek létrehozva");
 
         } catch (SQLException ex) {
@@ -109,22 +126,7 @@ public class DbKapcsolat {
             System.out.println("hiba a vevok tábla létrehozásánál");
         }
 
-        //Beszállítók tábla
-        try {
-            stmt.execute("CREATE TABLE IF NOT EXISTS beszallitok("
-                    + "cegId  SERIAL NOT NULL PRIMARY KEY,"
-                    + "cegNev text,"
-                    + "telephely text,"
-                    + "cegTelefonSzam text,"
-                    + "cegEmailCim text,"
-                    + "cegAdoSzam text)");
-
-            System.out.println("tábla beszallitok létrehozva");
-
-        } catch (SQLException ex) {
-            Logger.getLogger(DbKapcsolat.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("hiba a beszallitok tábla létrehozásánál");
-        }
+        
 
         //Tranzakciók tábla
         try {
@@ -132,7 +134,7 @@ public class DbKapcsolat {
                     + "  tranzakcioId SERIAL NOT NULL PRIMARY KEY,   "
                     + "  raktarId int REFERENCES raktarak(raktarId),"
                     + "  termekId int REFERENCES termekek(termekId),"
-                    + "  termekDb int"
+                    + "  termekDb int DEFAULT 0"
                     + ")");
 
             System.out.println("tábla tranzakciok létrehozva");
@@ -167,49 +169,85 @@ public class DbKapcsolat {
     }
 
     public void bevetelezes(int raktarId, int termekId, int db) {
-        int darab = 0;
-        int vanE = -1;
-        try {
-            
-            ResultSet rs = stmt.executeQuery("SELECT count(*) vanE FROM tranzakciok where termekId=" + termekId + " AND raktarId=" + raktarId + ";");
-            while (rs.next()) {
-                vanE = rs.getInt("vanE");
+        int ujTermekDarab = 0;
+        int letezikEmarAtranzakcio = -1;
+        ResultSet rs;
 
+        //Létezeik e már ez a tranzakció, új termék darab szám számolása
+        try {
+            rs = stmt.executeQuery("SELECT count(*) letezikE FROM tranzakciok where termekId=" + termekId + " AND raktarId=" + raktarId + ";");
+
+            //letezikEmarAtranzakcio==0, ha nem és 1,ha igen//egy termékid raktárid pár csak egyszer szerepelhet
+            while (rs.next()) {
+                letezikEmarAtranzakcio = rs.getInt("letezikE");
             }
+
+            //a régi darabszám plusz az új darabszám, régit lekérdezi
             rs = stmt.executeQuery("SELECT tranzakciok.termekDb FROM tranzakciok where termekId=" + termekId + " AND raktarId=" + raktarId + ";");
             while (rs.next()) {
-                darab = db + rs.getInt("termekDb");
-
+                ujTermekDarab = db + rs.getInt("termekDb");
             }
         } catch (SQLException ex) {
             Logger.getLogger(DbKapcsolat.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (vanE == 0) {
+
+        //Nincs ilyen tranzakcio, inzertálja
+        if (letezikEmarAtranzakcio == 0) {
             try {
                 ptmt = con.prepareStatement("INSERT INTO tranzakciok (raktarId,termekId,termekDb)VALUES(?,?,?);");
                 ptmt.setInt(1, raktarId);
-                System.out.println("1");
                 ptmt.setInt(2, termekId);
-                System.out.println("2");
-                ptmt.setInt(3, db);//javítani hogy termekDbnek legyen alapértéke 0 a tranzakciókban
-                System.out.println("3");
+                ptmt.setInt(3, db);
                 ptmt.executeUpdate();
                 System.out.println("Tranzakcio hozzáadva");
             } catch (SQLException ex) {
                 Logger.getLogger(DbKapcsolat.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else if (vanE != 0) {
+            //Van már ilyen tranzakcio, módosítsa a darabszámot
+        } else if (letezikEmarAtranzakcio != 0) {
             try {
                 ptmt = con.prepareStatement("UPDATE tranzakciok SET termekDb=? WHERE  termekId=" + termekId + " AND raktarId=" + raktarId + ";");
-
-                ptmt.setInt(1, darab);
+                ptmt.setInt(1, ujTermekDarab);
                 ptmt.executeUpdate();
                 System.out.println("Tranzakcio hozzáadva");
-            } catch (Exception e) {
-                System.out.println("2ajjajj");
+            } catch (SQLException ex) {
+                Logger.getLogger(DbKapcsolat.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
+        //tranzakciók kiírása
+        lekerdezTranzakcio();
+    }
+
+    public void kivételezés(int raktarId, int termekId, int db) {
+        int ujTermekDarab = 0;
+        int aktualisTermekDarab = 0;
+        ResultSet rs;
+
+        try {
+            rs = stmt.executeQuery("SELECT tranzakciok.termekDb FROM tranzakciok WHERE tranzakciok.raktarId='" + raktarId + "' AND tranzakciok.termekId='" + termekId + "';");
+
+            while (rs.next()) {
+                aktualisTermekDarab = rs.getInt("termekDb");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DbKapcsolat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        ujTermekDarab = aktualisTermekDarab - db;
+
+        if (ujTermekDarab < 0) {
+            System.out.println("popupablakkell");
+        } else {
+            try {
+                ptmt = con.prepareStatement("UPDATE tranzakciok SET termekDb=? WHERE tranzakciok.raktarId= " + raktarId + " AND tranzakciok.termekId=" + termekId + ";");
+                ptmt.setInt(1, ujTermekDarab);
+                ptmt.executeUpdate();
+                System.out.println("sikeres tranzakcio");
+            } catch (SQLException ex) {
+                Logger.getLogger(DbKapcsolat.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
         lekerdezTranzakcio();
     }
 
@@ -237,18 +275,19 @@ public class DbKapcsolat {
 
     public void lekerdezTermekekTabla() {
         try {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM termekek;");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM termekek INNER JOIN beszallitok ON termekek.cegId=beszallitok.cegId;");
             System.out.println("_____________________Termékek:___________________________");
             while (rs.next()) {
                 System.out.println("id:  " + rs.getInt("termekId"));
+               System.out.println("cegnév: " + rs.getString("cegNev"));
                 System.out.println("cikkszám:  " + rs.getString("cikkszám"));
-                System.out.println("megnevezés  :" + rs.getString("megnevezes"));
-                System.out.println("ár:  " + rs.getInt("ar"));
-                System.out.println("darab:  " + rs.getInt("darab"));
+               System.out.println("megnevezés  :" + rs.getString("megnevezes"));
+                System.out.println("ár:  " + rs.getInt("ar"));                
                 System.out.println("");
             }
         } catch (SQLException ex) {
             Logger.getLogger(DbKapcsolat.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("hiba a terméklekérdezésnél");
         }
     }
 
@@ -323,10 +362,11 @@ public class DbKapcsolat {
 
             while (rs.next()) {
                 termekek.add(new Termék(rs.getInt("termekId"),
+                        rs.getInt("cegId"),
                         rs.getString("cikkszám"),
                         rs.getString("megnevezes"),
-                        rs.getInt("ar"),
-                        rs.getInt("darab")));
+                        rs.getInt("ar")));
+                        
             }
         } catch (SQLException ex) {
             Logger.getLogger(DbKapcsolat.class.getName()).log(Level.SEVERE, null, ex);
@@ -348,6 +388,25 @@ public class DbKapcsolat {
         } catch (SQLException ex) {
             Logger.getLogger(DbKapcsolat.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+    }
+
+    private void ujBeszallitoVektorhozAd(Beszállító beszallito) {
+        try {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM beszallitok WHERE cegNev='" + beszallito.getCegNev() + "' ;");
+
+            while (rs.next()) {
+                beszallitok.add(new Beszállító(rs.getInt("cegId"),
+                        rs.getString("cegNev"),
+                        rs.getString("telephely"),
+                        rs.getString("cegTelefonSzam"),
+                        rs.getString("cegEmailCim"),
+                        rs.getString("cegAdoSzam")));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DbKapcsolat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     public void termekekVektorFeltolt() {
@@ -358,10 +417,11 @@ public class DbKapcsolat {
 
             while (rs.next()) {
                 termekek.add(new Termék(rs.getInt("termekId"),
+                        rs.getInt("cegId"),
                         rs.getString("cikkszám"),
                         rs.getString("megnevezes"),
-                        rs.getInt("ar"),
-                        rs.getInt("darab")));
+                        rs.getInt("ar")));
+                        
             }
         } catch (SQLException se) {
             System.err.println("Termék lekérdezési hiba!");
@@ -373,7 +433,7 @@ public class DbKapcsolat {
         try {
 
             ResultSet rs = stmt.executeQuery("SELECT * FROM raktarak ;");
-            raktarak.clear();           
+            raktarak.clear();
             while (rs.next()) {
 
                 raktarak.add(new Raktár(rs.getInt("raktarId"),
@@ -433,10 +493,11 @@ public class DbKapcsolat {
     public void ujTermek(Termék termek) {
 
         try {
-            ptmt = con.prepareStatement("INSERT INTO termekek (cikkszám,megnevezes,ar)VALUES(?,?,?)");
-            ptmt.setString(1, termek.getCikkszam());
-            ptmt.setString(2, termek.getMegnevezes());
-            ptmt.setInt(3, termek.getAr());
+            ptmt = con.prepareStatement("INSERT INTO termekek (cegId,cikkszám,megnevezes,ar)VALUES(?,?,?,?)");
+            ptmt.setInt(1, termek.getBeszallitoId());
+            ptmt.setString(2, termek.getCikkszam());
+            ptmt.setString(3, termek.getMegnevezes());
+            ptmt.setInt(4, termek.getAr());
             ptmt.executeUpdate();
 
             ujTermekVektorhozAd(termek);
@@ -500,7 +561,7 @@ public class DbKapcsolat {
                     + "VALUES ('" + beszallito.getCegNev() + "','" + beszallito.getTelephely() + "','" + beszallito.getCegTelefonSzam() + "','" + beszallito.getCegEmailCim() + "','" + beszallito.getCegAdoSzam() + "')";
 
             stmt.executeUpdate(sql);
-            //beszallito vektorhoz ad
+            ujBeszallitoVektorhozAd(beszallito);
             System.out.println("Beszállító hozzáadva");
 
         } catch (SQLException ex) {

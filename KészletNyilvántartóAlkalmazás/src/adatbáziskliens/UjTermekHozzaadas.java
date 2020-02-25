@@ -5,6 +5,7 @@
  */
 package adatbáziskliens;
 
+import adatbáziskapcsolat.Beszállító;
 import adatbáziskapcsolat.DbKapcsolat;
 import adatbáziskapcsolat.Termék;
 import javax.swing.JFrame;
@@ -25,7 +26,7 @@ public class UjTermekHozzaadas extends javax.swing.JDialog {
         this.setLocationRelativeTo(null);
         db = ((Keszletnyilvantarto) parent).getDbKapcsolat();
         frame = ((Keszletnyilvantarto) parent);
-
+        beszallitoLista.setListData(db.getBeszallitok());
     }
 
     /**
@@ -45,6 +46,9 @@ public class UjTermekHozzaadas extends javax.swing.JDialog {
         ujTermekHozzaadButton = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         ar = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        beszallitoLista = new javax.swing.JList();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Új Termék Hozzáadás");
@@ -79,16 +83,17 @@ public class UjTermekHozzaadas extends javax.swing.JDialog {
         jLabel4.setForeground(new java.awt.Color(0, 0, 102));
         jLabel4.setText("Ár");
 
+        jLabel5.setText("Beszállító");
+
+        jScrollPane1.setViewportView(beszallitoLista);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGap(46, 46, 46)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -100,28 +105,43 @@ public class UjTermekHozzaadas extends javax.swing.JDialog {
                             .addComponent(megnevezes)
                             .addComponent(cikkszam)
                             .addComponent(ujTermekHozzaadButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(ar))))
+                            .addComponent(ar))
+                        .addGap(57, 57, 57)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addGap(53, 53, 53))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(105, 105, 105)))))
                 .addContainerGap(28, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(cikkszam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(megnevezes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(ar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12)
-                .addComponent(ujTermekHozzaadButton)
+                .addGap(16, 16, 16)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(cikkszam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(megnevezes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(ar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(12, 12, 12)
+                        .addComponent(ujTermekHozzaadButton))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
 
@@ -131,6 +151,7 @@ public class UjTermekHozzaadas extends javax.swing.JDialog {
     private void ujTermekHozzaadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ujTermekHozzaadButtonActionPerformed
 
         try {
+            int cegId_=((Beszállító)beszallitoLista.getSelectedValue()).getCegId();
             String cikkszam_ = cikkszam.getText();
             String megnevezes_ = megnevezes.getText();
             int ar_ = Integer.parseInt(ar.getText());
@@ -140,7 +161,7 @@ public class UjTermekHozzaadas extends javax.swing.JDialog {
                 return;
             }
 
-            Termék termek = new Termék(cikkszam_, megnevezes_, ar_);
+            Termék termek = new Termék(cegId_,cikkszam_, megnevezes_, ar_);
             db.ujTermek(termek);
             frame.setVisible(true);
             this.setVisible(false);
@@ -148,7 +169,7 @@ public class UjTermekHozzaadas extends javax.swing.JDialog {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Adatbeviteli hiba!");
         }
-       // db.lekerdezTermekek();
+       db.lekerdezTermekekTabla();
 
 
     }//GEN-LAST:event_ujTermekHozzaadButtonActionPerformed
@@ -201,11 +222,14 @@ public class UjTermekHozzaadas extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField ar;
+    private javax.swing.JList beszallitoLista;
     private javax.swing.JTextField cikkszam;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField megnevezes;
     private javax.swing.JButton ujTermekHozzaadButton;
     // End of variables declaration//GEN-END:variables
