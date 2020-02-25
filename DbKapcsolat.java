@@ -133,8 +133,8 @@ public class DbKapcsolat {
         try {
             stmt.execute("CREATE TABLE IF NOT EXISTS tranzakciok ("
                     + "  tranzakcioId SERIAL NOT NULL PRIMARY KEY,   "
-                    + "  raktarId INTEGER REFERENCES raktarak(raktarId),"
-                    + "  termekId INTEGER REFERENCES termekek(termekId),"
+                    + "  raktarId int REFERENCES raktarak(raktarId),"
+                    + "  termekId int REFERENCES termekek(termekId),"
                     + "  termekDb int"
                     + ")");
 
@@ -198,12 +198,15 @@ public class DbKapcsolat {
             try {
                 ptmt = con.prepareStatement("INSERT INTO tranzakciok (raktarId,termekId,termekDb)VALUES(?,?,?);");
                 ptmt.setInt(1, raktarId);
+                System.out.println("1");
                 ptmt.setInt(2, termekId);
+                System.out.println("2");
                 ptmt.setInt(3, db);//javítani hogy termekDbnek legyen alapértéke 0 a tranzakciókban
+                System.out.println("3");
                 ptmt.executeUpdate();
                 System.out.println("Tranzakcio hozzáadva");
-            } catch (Exception e) {
-                System.out.println("1ajjajj");
+            } catch (SQLException ex) {
+                Logger.getLogger(DbKapcsolat.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (vanE != 0) {
             try {
@@ -223,29 +226,29 @@ public class DbKapcsolat {
     private void lekerdezTranzakcio() {
         try {
             // termekek vektor feltöltése
-            ResultSet rs = stmt.executeQuery("SELECT tranzakcioId, tranzakciok.raktarId, termekek.megnevezes, tranzakciok.termekDb FROM tranzakciok INNER JOIN termekek ON tranzakciok.termekId=termekek.termekId ;");  //ORDER BY nev
+            ResultSet rs = stmt.executeQuery("SELECT tranzakcioId, raktarak.raktarNev, termekek.megnevezes, tranzakciok.termekDb FROM ((tranzakciok INNER JOIN termekek ON tranzakciok.termekId=termekek.termekId) INNER JOIN raktarak ON tranzakciok.raktarId=raktarak.raktarId) ;");  
 
             System.out.println("_____________________Tranzakciok:___________________________");
             while (rs.next()) {
 
-                System.out.println(rs.getInt("tranzakcioId"));
-                System.out.println(rs.getInt("raktarId"));
-                System.out.println(rs.getString("megnevezes"));
-                System.out.println(rs.getInt("termekDb"));
+                System.out.println("tranzakcioId:  "+rs.getInt("tranzakcioId"));
+                System.out.println("raktarNev  :"+rs.getString("raktarNev"));
+                System.out.println("termek megnevezes:  "+rs.getString("megnevezes"));
+                System.out.println("termek db:  "+rs.getInt("termekDb"));
                 System.out.println("");
 
             }//while
         } catch (SQLException se) {
-            System.err.println("Termék lekérdezési hiba!");
+            System.err.println("Tranzakcio lekérdezési hiba!");
             //System.err.println(se.getSQLState()); //hibakód
             System.err.println(se.getMessage()); //sql hibaüzenet
         }
     }
 
-    private void lekerdezTermekek() {
+    public void lekerdezTermekek() {
         try {
             // termekek vektor feltöltése
-            ResultSet rs = stmt.executeQuery("SELECT * FROM termekek ;");  //ORDER BY nev
+            ResultSet rs = stmt.executeQuery("SELECT * FROM termekek ;");  
             termekek.clear();  //régi adatokat eldobja
             System.out.println("_____________________Termékek:___________________________");
             while (rs.next()) {
@@ -256,11 +259,11 @@ public class DbKapcsolat {
                         rs.getInt("ar"),
                         rs.getInt("darab")));
 
-                System.out.println(rs.getInt("termekId"));
-                System.out.println(rs.getString("cikkszám"));
-                System.out.println(rs.getString("megnevezes"));
-                System.out.println(rs.getInt("ar"));
-                System.out.println(rs.getInt("darab"));
+                System.out.println("id:  "+rs.getInt("termekId"));
+                System.out.println("cikkszám:  "+rs.getString("cikkszám"));
+                System.out.println("megnevezés  :"+rs.getString("megnevezes"));
+                System.out.println("ár:  "+rs.getInt("ar"));
+                System.out.println("darab:  "+rs.getInt("darab"));
                 System.out.println("");
 
             }//while
@@ -271,10 +274,10 @@ public class DbKapcsolat {
         }
     }
 
-    private void lekerdezRaktarak() {
+    public void lekerdezRaktarak() {
         try {
             // raktarak vektor feltöltése
-            ResultSet rs = stmt.executeQuery("SELECT * FROM raktarak ;");  //ORDER BY nev
+            ResultSet rs = stmt.executeQuery("SELECT * FROM raktarak ;"); 
             raktarak.clear();  //régi adatokat eldobja
             System.out.println("__________________Raktárak:__________________________");
             while (rs.next()) {
@@ -285,11 +288,11 @@ public class DbKapcsolat {
                         rs.getString("raktarTelefonSzam"),
                         rs.getString("raktarEmailCim")));
 
-                System.out.println(rs.getInt("raktarId"));
-                System.out.println(rs.getString("raktarNev"));
-                System.out.println(rs.getString("raktarCim"));
-                System.out.println(rs.getString("raktarTelefonSzam"));
-                System.out.println(rs.getString("raktarEmailCim"));
+                System.out.println("id: "+rs.getInt("raktarId"));
+                System.out.println("nev:  "+rs.getString("raktarNev"));
+                System.out.println("cim:  "+rs.getString("raktarCim"));
+                System.out.println("telefonszam:  "+rs.getString("raktarTelefonSzam"));
+                System.out.println("email:  "+rs.getString("raktarEmailCim"));
                 System.out.println("");
 
             }//while
@@ -303,7 +306,7 @@ public class DbKapcsolat {
     private void lekerdezVevok() {
         try {
             // raktarak vektor feltöltése
-            ResultSet rs = stmt.executeQuery("SELECT * FROM vevok ;");  //ORDER BY nev
+            ResultSet rs = stmt.executeQuery("SELECT * FROM vevok ;");  
             vevok.clear();  //régi adatokat eldobja
             System.out.println("________________________Vevők:_____________________________");
             while (rs.next()) {
@@ -333,7 +336,7 @@ public class DbKapcsolat {
     private void lekerdezBeszallitok() {
         try {
             // raktarak vektor feltöltése
-            ResultSet rs = stmt.executeQuery("SELECT * FROM beszallitok ;");  //ORDER BY nev
+            ResultSet rs = stmt.executeQuery("SELECT * FROM beszallitok ;");  
             beszallitok.clear();  //régi adatokat eldobja
             System.out.println("_____________________Beszállítók:__________________________");
             while (rs.next()) {
@@ -364,7 +367,7 @@ public class DbKapcsolat {
     public void ujTermek(Termék termek) {
 
         try {
-
+            
             // String sql = "INSERT INTO termekek (cikkszám,megnevezes,ar) "
             //         + "VALUES ('" + termek.getCikkszam() + "','" +termek.getMegnevezes() + "','"+ termek.getAr()+"')";
             // stmt.executeUpdate(sql);
@@ -373,7 +376,7 @@ public class DbKapcsolat {
             ptmt.setString(2, termek.getMegnevezes());
             ptmt.setInt(3, termek.getAr());
             ptmt.executeUpdate();
-            termekek.add(termek);
+           
             System.out.println("Termék hozzáadva");
 
         } catch (SQLException ex) {
@@ -381,6 +384,7 @@ public class DbKapcsolat {
             JOptionPane.showMessageDialog(null, "Hibás adatbevitel!");
 
         }
+        //termekek.add(termek);
 
     }
 
@@ -397,13 +401,14 @@ public class DbKapcsolat {
             ptmt.setString(3, raktar.getRaktarTelefonSzam());
             ptmt.setString(4, raktar.getRaktarEmailCim());
             ptmt.executeUpdate();
-            raktarak.add(raktar);
+            
             System.out.println("Raktár hozzáadva");
 
         } catch (SQLException ex) {
             Logger.getLogger(DbKapcsolat.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, "Hibás adatbevitel!");
         }
+       // raktarak.add(raktar);
 
     }
 

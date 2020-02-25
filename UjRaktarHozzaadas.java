@@ -172,6 +172,7 @@ public class UjRaktarHozzaadas extends javax.swing.JDialog {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Hibás adatbevitel!");
         }
+        db.lekerdezRaktarak();
     }//GEN-LAST:event_raktarHozzaadButtonActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed

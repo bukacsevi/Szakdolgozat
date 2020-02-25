@@ -29,8 +29,7 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
         db = new DbKapcsolat();
-        
-        
+
     }
 
     /**
@@ -199,7 +198,7 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
 
     private void ujBeszallitoMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ujBeszallitoMenuActionPerformed
         this.setVisible(false);
-        UjBeszallitoHozzaadas ujBeszallito=new UjBeszallitoHozzaadas(this,true);
+        UjBeszallitoHozzaadas ujBeszallito = new UjBeszallitoHozzaadas(this, true);
         ujBeszallito.setVisible(true);
     }//GEN-LAST:event_ujBeszallitoMenuActionPerformed
 
@@ -220,7 +219,7 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
 
     private void ujVevoMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ujVevoMenuActionPerformed
         this.setVisible(false);
-        UjVevoHozzaadas ujVevo= new UjVevoHozzaadas(this,true);
+        UjVevoHozzaadas ujVevo = new UjVevoHozzaadas(this, true);
         ujVevo.setVisible(true);
     }//GEN-LAST:event_ujVevoMenuActionPerformed
 
@@ -230,20 +229,23 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowActivated
 
     private void bevetelezesGombActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bevetelezesGombActionPerformed
-        int raktarId=((Raktár) raktarLista.getSelectedValue()).getRaktarId();
-        int termekId=((Termék) termekLista.getSelectedValue()).getTermekId();
-        int darab= Integer.parseInt(termekDb.getText());
-        
-        db.bevetelezes(raktarId, termekId, darab);
+        try {
+            int raktarId = ((Raktár) raktarLista.getSelectedValue()).getRaktarId();
+            int termekId = ((Termék) termekLista.getSelectedValue()).getTermekId();
+            int darab = Integer.parseInt(termekDb.getText());
+            raktarLista.setListData(db.getRaktarak());
+            termekLista.setListData(db.getTermekek());
+            //input ellenőrzés kell
+            db.bevetelezes(raktarId, termekId, darab);
+            
+        } catch (Exception e) {
+            System.out.println("hiba a bevételezésben");
+        }
     }//GEN-LAST:event_bevetelezesGombActionPerformed
 
     protected DbKapcsolat getDbKapcsolat() {
         return db;
     }
-    
-    
-    
-    
 
     /**
      * @param args the command line arguments
@@ -304,5 +306,5 @@ public class Keszletnyilvantarto extends javax.swing.JFrame {
     private javax.swing.JMenuItem ujVevoMenu;
     // End of variables declaration//GEN-END:variables
     private DbKapcsolat db;
-    
+
 }

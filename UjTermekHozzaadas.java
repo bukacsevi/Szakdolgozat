@@ -148,6 +148,7 @@ public class UjTermekHozzaadas extends javax.swing.JDialog {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Adatbeviteli hiba!");
         }
+        db.lekerdezTermekek();
 
 
     }//GEN-LAST:event_ujTermekHozzaadButtonActionPerformed
